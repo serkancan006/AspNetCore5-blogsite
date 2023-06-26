@@ -1,6 +1,8 @@
 ﻿using BusinessLayer.Concrete;
 using DataAccessLayer.EntityFramework;
+using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace AspNetCore5_blogsite.Controllers
 {
@@ -11,8 +13,18 @@ namespace AspNetCore5_blogsite.Controllers
 		{
 			return View();
 		}
+		[HttpGet]
 		public PartialViewResult PartialAddComment()
 		{
+			return PartialView();
+		}
+		[HttpPost]
+		public PartialViewResult PartialAddComment(Comment p)
+		{
+			p.CommentDate = DateTime.Parse(DateTime.Now.ToShortDateString());
+			p.CommentStatus = true;
+			p.BlogID = 2;
+			cm.commentAdd(p);
 			return PartialView();
 		}
 		public PartialViewResult CommentListMyBlog(int id)
