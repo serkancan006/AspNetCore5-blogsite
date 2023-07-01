@@ -28,7 +28,7 @@ namespace AspNetCore5_blogsite
         {
             services.AddControllersWithViews();
             //Session kýsmý
-            services.AddSession();
+            //services.AddSession();
 
             //Authorize
             services.AddMvc(config =>
@@ -69,7 +69,7 @@ namespace AspNetCore5_blogsite
             //yeni logindeki komut
             app.UseAuthentication();
             //Session kýsmý
-            app.UseSession();
+            //app.UseSession();
 
             app.UseRouting();
 
