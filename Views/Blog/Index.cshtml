@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/UserLayout.cshtml";
 }
 
+
 <section class="main-content-w3layouts-agileits">
     <div class="container">
         <h3 class="tittle">Bloglar</h3>
@@ -40,7 +41,12 @@
                                 <h5 class="card-title">
                                     <a href="/Blog/BlogReadAll/@item.BlogID/">@item.BlogTitle</a>
                                 </h5>
-                                <p class="card-text mb-3">@item.BlogContent.Substring(0,item.BlogContent.Substring(0,130).LastIndexOf(" "))...</p>
+                                <p class="card-text mb-3">
+                                    @{
+                                        string truncatedContent = (!string.IsNullOrEmpty(item.BlogContent) && item.BlogContent.Length > 130) ? item.BlogContent.Substring(0, item.BlogContent.Substring(0, 130).LastIndexOf(" ")) + "..." : item.BlogContent;
+                                    }
+                                    @truncatedContent
+                                </p>
                                 <a href="/Blog/BlogReadAll/@item.BlogID/" class="btn btn-primary read-m">Devamını Oku</a>
                             </div>
                         </div>

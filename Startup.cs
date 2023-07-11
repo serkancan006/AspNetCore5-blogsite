@@ -1,3 +1,5 @@
+using DataAccessLayer.Concrete;
+using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -26,6 +28,14 @@ namespace AspNetCore5_blogsite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<Context>();    // identity ile ilgili ekledik
+            services.AddIdentity<AppUser, AppRole>(x =>        //parantez içi identity password ayarlarý kýsmýdýr
+            {
+                x.Password.RequireUppercase = false;
+                x.Password.RequireNonAlphanumeric = false;
+            })
+                .AddEntityFrameworkStores<Context>(); // identity ile ilgili ekledik
+
             services.AddControllersWithViews();
             //Session kýsmý
             //services.AddSession();
