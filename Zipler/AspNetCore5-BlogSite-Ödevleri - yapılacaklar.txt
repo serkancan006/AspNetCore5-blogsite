@@ -1,0 +1,300 @@
+-List ile IColection arasında ne fark var?
+*ICollection bir interface,List ise bir class tır.Bu yüzden List, ICollection ve daha birçok interface özelliğini kendine miras alabilir.
+Hocam, ICollection, IEnumerable arayüzünü kullanır.Add - element ekleyen, remove - element silen ve contains ​- elementin varlığını sınayan 
+metodları vardır. List ise ICollection ve  IEnumerable arayüzlerini kullanır. Insert - belirtilen indekse element ekleyen, removeAt - belirtilen indeksten elementi çıkaran, indexOf - belirtilen indeksteki elementi döndüren metodları vardır.
+
+-Dry nedir?
+*DRY (Don’t Repeat Yourself) prensibine göre kod içindeki her parçacığın kendine özelleştirilmiş bir yapısı, görevi olmalıdır. Aksi halde bir değişiklik yapılması gerektiğinde o parçadan etkilenen diğer parçalarda da değişiklik yapılması gerekir ki bu da çoğu zaman karmaşıklığa sebep olur. Kod tekrarından kaçınılmalı, tekrarlamalar soyutlama yolu ile aşılmalıdır.
+
+-"using var c = new Context()"  ve "Context c = new Context()"  arasında nasıl bir fark vardır?
+*Context c= new Context ifadesi Class genelinde tanımlanır ve tüm class içerisinde kullanılır. 
+*using var = new Context ifadesi ise sadece yazılı olan method içerisinde kullanılır ve her method için tanımlanmak zorundadır.
+
+Soru 1   : SaveChanges ın Ado Net de kullanılan karşılığı nedir? 
+Cevap 1: Tam karşılığı olmamakla beraber ExecuteNonQuery.
+Soru 2   : "using var c = new Context()"  ve "Context c = new Context()"  arasında nasıl bir fark vardır?
+Cevap 2:  Farklılıklar şu şekildedir:
+
+*"using var c = new Context()": Bu ifade, using bloğu içinde tanımlanan ve IDisposable arayüzünü uygulayan bir Context nesnesi oluşturur. using bloğu bittiğinde, Dispose() yöntemi otomatik olarak çağrılır ve kaynaklar serbest bırakılır. Bu, kaynakların hatasız bir şekilde serbest bırakılmasını sağlar.
+
+*"Context c = new Context()": Bu ifade, bir Context nesnesi oluşturur, ancak IDisposable arayüzü ile ilgilenmez. Bu durumda, kaynakları serbest bırakmak için Dispose() yöntemini çağırmak geliştiricinin sorumluluğundadır. Dispose() yöntemi çağrılmadığı takdirde, kaynaklar el ile serbest bırakılmaz ve potansiyel olarak kaynak sızıntılarına yol açabilir.
+
+*Bu nedenle, IDisposable arayüzünü uygulayan nesneleri kullanırken ve kaynakları düzgün bir şekilde serbest bırakmak istediğinizde "using var" ifadesini tercih etmek önemlidir.
+
+
+*EfCategoryRepository'i kullanmamızdaki dezavantaj Entity Framework'e bağımlı olmamız. İlerde başka bir teknoloji geldiğinde projeyi ona geçirmek için neredeyse bütün katmanlardaki kodları tek tek değiştirmemiz gerekir ama interface kullanarak bu bağımlılığı yok eder ve istersek ileride daha farklı teknolojilere geçebiliriz. Avantaj olaraksa kısa vadede daha az kod yazıp daha kısa sürede projeyi bitirebiliriz.
+
+
+*Eager Loading(bunu kullandık): nesneyi ihtiyaç anından hemen önce oluşturur ve bekletir. Linq sorgusu çalıştırıldığında verilerin tamamını yükler ve hafızaya alır. Daha ucuz maliyetlidir.
+Lazy Loading : Bu yöntemde veriler sorguya bağlı olarak çekilir ancak veri setinin içindeki tüm dataları yüklemek yerine verilerin çağrıldıkça otomatik yüklenmesi söz konusudur. Daha pahalı işlemdir.
+
+
+-Şifre Eşleşmesi yapımı
+*EntityLayer->Concrate->Writer classına
+ [Compare("WriterPassword", ErrorMessage = "Şifreler eşleşmiyor. Lütfen tekrar deneyin!")]
+  public string  ConfirmPassword { get; set; }
+
+ekleyip şifre onaylama işlemi yapılır
+Index.cshtml sayfasında confirm password için input tagına name="ConfirmPassword" yazılmalıdır.
+
+
+ders 34
+**Şifre Hashleme (Gizleme) için Nuget Manager Consoldan BCrypt indirilip şifre hashlenebilir.  Cod (writer.WriterPassword = BCrypt.Net.BCrypt.HashPassword(writer.WriterPassword);)            Video Kaynağı: https://www.youtube.com/watch?v=8eAD_UGLYaY
+
+
+Ders 34
+**Controller:
+public IActionResult Index()
+        {
+            var model = new ViewModel();
+            model.Sehirler = new List<SelectListItem>();
+            model.Sehirler.Add(new SelectListItem() { Text = "İstanbul", Value = "1", Selected = false });
+            model.Sehirler.Add(new SelectListItem() { Text = "Ankara", Value = "2", Selected = false });
+            model.Sehirler.Add(new SelectListItem() { Text = "İzmir", Value = "3", Selected = false });
+            model.Sehirler.Add(new SelectListItem() { Text = "Diğer", Value = "4", Selected = false });
+            return View(model);
+        }
+
+View Model: 
+public class ViewModel
+    {
+        public string Sehir { get; set; }
+        public IList<SelectListItem> Sehirler { get; set; }
+
+    }
+
+Index View: 
+@using (Html.BeginForm("Index", "RegisterController", FormMethod.Post))
+                        {
+                            <div class="form-group col-md-6">
+                                <label for="validationCity mb-2">Şehir Seçiniz</label>
+                                <br />
+                                <label>
+                                    @if (Model != null)
+                                    {
+                                        @Html.DropDownListFor(m => m.Sehir, Model.Sehirler);
+                                    }
+                                </label>
+
+                            </div>
+                        }
+1
+Yanıtla
+
+2 yanıt
+@emregecer1216
+@emregecer1216
+1 yıl önce
+@model IEnumerable<CoreDemo.Models.CityModel>
+index view in icine boyle zadim.
+
+  @Html.DropDownListFor(m => m.Sehir, Model.Sehirler);
+hata: Citymodel doesnt contain sehir , sehirler
+Yanıtla
+@miraydurgun
+@miraydurgun
+2 ay önce
+ @emregecer1216  @model CoreBlog.Models.Cities olarak yazman gerek
+
+
+-39. ders ödevi
+
+Ders-54
+--Görev : Yazar panelinde Purple logosu yerine kendi blogunuzun logosunu koyun.
+
+
+72.Ders---
+Girilen Parola kontrolleri için  view kısmında; 
+                       <div class="form-group">
+                            <label for="exampleInputPassword4">Parola</label>
+                            <input type="password" class="form-control" id="exampleInputPassword4" asp-for="WriterPassword" name="pass1" placeholder="Password">
+                            @Html.ValidationMessageFor(x=>x.WriterPassword)
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword4">Parolayı Doğrulayın</label>
+                            <input type="password" class="form-control" id="exampleInputPassword4" asp-for="WriterPassword" name="pass2" placeholder="Password">
+                            <p class="text text-danger">@ViewBag.hata</p>
+                       </div>
+					   
+Controller kısmında ; 
+    public IActionResult WriterEditProfile(Writer writer)
+    {
+        var pas1 = Request.Form["pass1"];
+        var pas2 = Request.Form["pass2"]; 
+        if ( pas1 == pas2)
+        {
+            writer.WriterPassword = pas2;
+            WriterValidator validationRules = new WriterValidator();
+            ValidationResult result = validationRules.Validate(writer);
+            if (result.IsValid)
+            {
+                writerManager.TUpdate(writer);
+                return RedirectToAction("Index", "Dashboard");
+            }
+            else
+            {
+                foreach (var item in result.Errors)
+                {
+                    ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+                }
+            }
+        }
+        else
+        {
+            ViewBag.hata = "Girdiğiniz Parolalar Uyuşmuyor!";
+        }
+        return View();
+    }
+	
+	Şeklinde düzenleme yapınca çalıştı.
+
+
+
+
+Ders 76 Ödevi Cevabı
+Ödev cevabı;
+Shared->Components->WriterNotification -> Default.cshtml  içerisinde
+foreach i şu şekilde yazarsak;
+@foreach (var item in Model.Where(x => x.NotificationStatus == true).OrderByDescending(x=>x.NotificationID).Take(5))
+
+Sadece status(durumu) aktif(true) olanlar, --> Where komutu ile
+en son gelen bildirim idsine göre sıralama  --> OrderByDescending ile 
+ve son 5 bildirim  olarak ayarlayabilirsiniz.  --> Take ile
+
+
+Ders 80 Araştırma
+IsRequired: ilgili alanın zorunluluğunu ifade eder. Bununla beraber IsOptional  opsiyonel olduğunu da belirtebiliriz.
+OnDelete yöntemi içinde 3 paremetre; (Silinme Durumunda)
+Cascade: Bağımlı olanlar siliniyor
+Restrict: Bağımlı olanlar etkilenmiyor
+SetNull: Değer NULL olarak değiştiriliyor.
+
+
+*****Ders 86 Ödevlerini Yap*******
+
+
+Ders 87 Araştırma ödevi RendorBody ve RenderSection
+RenderBody : Master Page yapısı kurmamızı sağlar.
+RenderSection ise Layout sayfasının istediğimiz bir alanında veri göstermemizi sağlar. Ayrıca " RenderSection("parametre", required: false) " bu şekilde tamamladığımızda zorunluğunu iptal edebiliriz. Bu sayede tanımladığımız parametreye ait rendersection boş bile gelse sayfada hata almayız.
+
+Tam ayırtman özelliğini söylemek gerekirse RenderBody her sayfada kullanılıyorken RenderSection istediğimiz sayfalarda gösterebiliriz.
+
+
+
+*****Ders 94 Ödevi ********
+
+
+
+****Ders 120*****
+Araştırma
+-Json dan bir entity ye çevirirken deserialize      bir entityi clasasa çevirirken serialize
+-Veriyi apiye gönderirken serialize olarak göndeririz. Veriyi alırken deserialize yaparak alırız.
+
+Hatalar
+-View ekleme işleminde sıkıntı olursa CoreDemo katmanına çift tıklayıp ,gelen CoreDemo.csproj sayfasında gördüğünüz bütün 5.0.9 olan versiyonları 5.0.13 yaptıktan sonra view ekleyebilirsiniz.
+-Selamlar, iyi çalışmalar. RenderSectionAsync methodunun ikinci parametresine false değerini atarsanız oradaki sorun çözülecektir diye hatırlıyorum. Açıklama satırı olunca diğer sayfalarda hata olacaktır, bu şekilde hatanın önüne geçilebilir.
+
+
+
+*****Ders 124 *******
+şartları kabul etmek için checkbox input type'a required ="" ekleyin
+
+Öncelikle modele public bool IsAcceptTheContract { get; set; } prop'unu ekledim.
+Sonra view'in içine şu koşulu ekledim.
+if (!signUpViewModel.IsAcceptTheContract)
+            {
+                ModelState.AddModelError("IsAcceptTheContract",
+                    "Sayfamıza kayıt olabilmek için gizlilik sözleşmesini kabul etmeniz gerekmektedir.");
+                return View(signUpViewModel);
+            }
+View kısmındada bu prop'a karşılık gelecek checkbox'a asp-for ile atama yaptım.
+<div class="checkbox i-checks"><label> <input type="checkbox" asp-for="IsAcceptTheContract"><i></i>
+Kullanım şartlarını okudum kabul ediyorum. Kabul ediyorum </label></div>
+
+
+Checkbox ın hemen üstüne   <span asp-validation-for="@Model.IsAcceptTheContract" class="text-danger"></span> bu kodu yazmamız gerekiyor aksi takdirde bende çalışmadı.
+
+
+*********Ders 127 Hataları***************
+
+
+*******Ders 131 Ödevi ********
+
+******Ders 133 Yorumları - Ödevleri ***********
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ödev Listesi
+20. Video: Projeyi GitHuba yüklemek.
+
+25. Video: Eager Loading ve Lazy loading araştırılacak. (Videonun yorumlarında cevaplar var)
+
+30. Video: View Component ile Partial view arasındaki fark araştırılacak.(Videonun yorumlarında cevaplar var)
+
+32 Video: Eğer Blogta Hiç Yorum yoksa ilk yorumu siz yazın diye yazdırılacak.
+
+33. Video: Kayıt Olurken Parolanın 2 kez girilip onaylanması.
+
+34. Video: Kayıt olma sayfasında değerlerini view modelde tutucağımız bir şehir seçimi
+
+35. Video: Fluent Validationda Kullanıcının parolası en az bir büyük harf, en az bir küçük harf ve en az 1 sayı olacak.
+---------------------------------------------------------------------------
+
+verdiğiniz görev : 52. Video: Mesajların 24 saatlik dilim içinde gönderilmiş ise ne kadar süre önce gönderildiği yazdırılacak.
+diğer görevler:
+
+39. Video: Partial viewlerin formu post ederken başka bir sayfaya gitmesine gerek kalmadan post işlemini yaptırma.
+
+40. Video: GitHub repoları güncellenecek.
+
+48. Video: ClaimsIdentity'de 2. parametre neden verilmeli ? Araştırılacak.
+
+54.Video Logo yapımı
+
+
+
+
+
+
+
+
+
+
+1- Farklı veritabanları(birden fazla veritabanı ile çalışmak) ile bağlantı kurup o veritabanlarından data işlemleri
+2- SEO uygulaması (blog projesi içerisinde güzel olur)
+3- Viewbag, ViewData, TempData veya Session ile data tutma yöntemleri hakkında bilgiler
+4- GROUPBY sorgusu kullanımı detayları
+5- Proje içerisinde SignalR kullanımı
+6- Dinamik çoklu dil kullanımı
+7- Birden fazla birbine bağlı tablolar üzerinden data bağdaştırımı ve veri çekimi. (Çoklu include ile sorgu (repository ile)). 
+8- List olmayan bir data için include metodu kullanımı
+9- Proje bitimine 10 ders kala kafamıza takılanları ek olarak soracağımız ve işleneceği birkaç bölüm daha :)
+
+E-Ticaret ve Kargo(Kurye) Uygulaması
