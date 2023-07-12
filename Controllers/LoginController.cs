@@ -53,5 +53,9 @@ namespace AspNetCore5_blogsite.Controllers
             return RedirectToAction("Index", "Login");
         }
 
+        public IActionResult AccessDenied() 
+        {
+            return View();
+        }
     }
 }
